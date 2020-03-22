@@ -2,16 +2,17 @@ require './test/test_helper'
 
 class DeckTest < Minitest::Test
   def setup
-    @cards_array = []
+    cards_array = []
     @card_1 = Card.new(:diamond, 'Queen', 12)
     @card_2 = Card.new(:spade, '3', 3)
     @card_3 = Card.new(:heart, 'Ace', 14)
-    @cards_array.concat([@card_1, @card_2, @card_3])
-    @deck = Deck.new(@cards_array)
+    cards_array.concat([@card_1, @card_2, @card_3])
+    @deck = Deck.new(cards_array)
   end
   
   def test_it_exists
-    assert_equal @deck.cards.first, @cards_array.first
+    assert @deck.cards.first
+    assert_equal 3, @deck.cards.count
   end
   
   def test_rank_of_card_at_0_returns_rank_of_first_given_card
