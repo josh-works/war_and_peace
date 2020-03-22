@@ -35,4 +35,37 @@ class DeckTest < Minitest::Test
     refute_includes highly_ranked, @card_2 
   end
   
+  def test_percent_high_ranking_easy_version
+    # aiming for 50
+    card_1 = Card.new(:diamond, 'Queen', 12)
+    card_2 = Card.new(:spade, '3', 3)
+    cards_array = [card_1, card_2]
+    deck = Deck.new(cards_array)
+    assert_equal 50.0, deck.percent_high_ranking
+  end
+  
+  def test_percent_high_ranking_harder_version
+    # aiming for 33.33
+    card_1 = Card.new(:diamond, 'Queen', 12)
+    card_2 = Card.new(:spade, '3', 3)
+    card_3 = Card.new(:spade, '4', 4)
+    cards_array = [card_1, card_2, card_3]
+    deck = Deck.new(cards_array)
+    assert_equal 33.33, deck.percent_high_ranking
+  end
+  
+  def test_add_card_adds_card_to_end_of_deck
+    new_card = Card.new(:heart, 'Jack', 11)
+    @deck.add_card(new_card)
+    assert_equal new_card, @deck.cards.last
+    assert_equal 4, @deck.cards.count
+  end
+  
+  def test_remove_card
+    card_to_remove = @deck.cards.first
+    @deck.remove_card
+    assert_equal 2, @deck.cards.count
+    refute_includes @deck.cards, card_to_remove
+  end
+  
 end
