@@ -7,4 +7,9 @@ class Deck
   def rank_of_card_at(index)
     cards[index].rank
   end
+  
+  def high_ranking_cards
+    # return face cards and aces
+    cards.select { |c| c.highly_ranked? }
+  end
 end
