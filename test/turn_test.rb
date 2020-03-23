@@ -41,6 +41,68 @@ class TurnTest < Minitest::Test
     assert_equal :mutually_assured_destruction, @mad_turn.type
   end
   
+  def test_winner_basic_turn_type
+    assert_equal :basic, @turn.type
+    assert_equal @player_2, @turn.winner
+  end
+  
+  def test_winner_war_turn_type
+    war_setup
+    assert_equal :war, @war_turn.type
+    assert_equal @war_turn.player_2, @war_turn.winner
+    
+  end
+  
+  def test_winner_mad_turn_type
+    mad_setup
+    assert_equal :mutually_assured_destruction, @mad_turn.type
+    assert_equal "No Winner", @mad_turn.winner
+  end
+  
+  def test_pile_cards_basic_moves_cards_from_players_deck_to_spoils
+    # basic setup
+    p1_starting_card = @player_1.deck.cards.first
+    p2_starting_card = @player_2.deck.cards.first
+    @turn.pile_cards
+    assert_equal 2, @turn.spoils_of_war.count
+    assert_includes @turn.spoils_of_war, p1_starting_card
+    assert_includes @turn.spoils_of_war, p2_starting_card
+    refute_includes @player_1.deck.cards, p1_starting_card
+    refute_includes @player_2.deck.cards, p2_starting_card
+  end
+  
+  def test_pile_cards_war_moves_cards_from_players_deck_to_spoils
+    # both players lose three cards TO spoils_of_war
+    war_setup
+    @war_turn.pile_cards
+    assert_equal 6, @war_turn.spoils_of_war.count
+    assert_equal 0, @war_turn.player_1.deck.cards.count
+    assert_equal 0, @war_turn.player_2.deck.cards.count
+  end
+  
+  def test_pile_cards_mad_moves_cards_from_players_deck_to_spoils
+    # both players lose 3 cards, don't go to spoils_of_war
+    mad_setup
+    @mad_turn.pile_cards
+    assert_equal 0, @mad_turn.spoils_of_war.count
+    assert_equal 0, @mad_turn.player_1.deck.cards.count
+    assert_equal 0, @mad_turn.player_2.deck.cards.count
+  end
+  
+  def test_award_spoils_sends_spoils_to_winner_of_basic_turn
+    
+  end
+  
+  def test_award_spoils_sends_spoils_to_winner_of_war_turn
+    war_setup
+  end
+  
+  def test_award_spoils_does_not_do_anything_if_mad_turn
+    mad_setup
+    
+  end
+  
+  
   def war_setup
     # p1 setup
     p1_card_1 = Card.new(:diamond, 'Queen', 12)

@@ -8,28 +8,86 @@ class Turn
   end
   
   def determine_turn_type
-    return :mutually_assured_destruction if !first_cards_diff_rank? && third_card_diff_rank?
-    return :war if !first_cards_diff_rank?
-    return :basic if first_cards_diff_rank?
+    return :mutually_assured_destruction if top_card_same_rank? && third_card_same_rank?
+    return :war if top_card_same_rank?
+    return :basic if !top_card_same_rank?
   end
+  
+  def winner
+    case type
+    when :basic 
+      player_with_highest_first_card
+    when :war 
+      player_with_highest_third_card
+    when :mutually_assured_destruction
+      "No Winner"
+    end
+  end
+  
+  def pile_cards
+    case type
+    when :basic
+      basic_card_adjustment
+    when :war
+      war_card_adjustment
+    when :mutually_assured_destruction
+      mad_card_adjustment
+    end
+  end
+  
   
   private
   
-    def third_card_diff_rank?
-      rank_1 = player_1.deck.rank_of_card_at(2)
-      rank_2 = player_2.deck.rank_of_card_at(2)
-      rank_1 == rank_2
+  def war_card_adjustment
+    old_p1_cards = player_1.remove_cards(3)
+    old_p2_cards = player_2.remove_cards(3)
+    @spoils_of_war += old_p1_cards
+    @spoils_of_war += old_p2_cards
+  end
+  
+  def basic_card_adjustment
+    c1 = player_1.remove_cards(1)
+    c2 = player_2.remove_cards(1)
+    @spoils_of_war += c1
+    @spoils_of_war += c2
+  end
+  
+  def mad_card_adjustment
+    player_1.remove_cards(3)
+    player_2.remove_cards(3)
+  end
+  
+    def player_with_highest_third_card
+      return player_1 if p1_card_2_rank > p2_card_2_rank
+      player_2
     end
   
-    def first_cards_diff_rank?
-      p1_first_card.rank != p2_first_card.rank
+    def player_with_highest_first_card
+      return player_1 if p1_card_0_rank > p2_card_0_rank
+      return player_2
     end
   
-    def p1_first_card
-      player_1.deck.cards.first
+    def third_card_same_rank?
+      p1_card_2_rank == p2_card_2_rank
+    end
+  
+    def top_card_same_rank?
+      p1_card_0_rank == p2_card_0_rank
     end
     
-    def p2_first_card
-      player_2.deck.cards.first
+    def p1_card_2_rank
+      player_1.second_card_rank
+    end
+    
+    def p2_card_2_rank
+      player_2.second_card_rank
+    end
+  
+    def p1_card_0_rank
+      player_1.top_card_rank
+    end
+    
+    def p2_card_0_rank
+      player_2.top_card_rank
     end
 end
