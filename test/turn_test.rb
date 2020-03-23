@@ -90,16 +90,30 @@ class TurnTest < Minitest::Test
   end
   
   def test_award_spoils_sends_spoils_to_winner_of_basic_turn
-    
+    # basic setup
+    @turn.pile_cards
+    @turn.award_spoils
+    assert_empty @turn.spoils_of_war
+    assert_equal 4, @player_2.deck.cards.count
+    assert_equal 2, @player_1.deck.cards.count
   end
   
   def test_award_spoils_sends_spoils_to_winner_of_war_turn
     war_setup
+    @war_turn.pile_cards
+    @war_turn.award_spoils
+    assert_empty @war_turn.spoils_of_war
+    assert_equal 6, @war_turn.player_2.deck.cards.count
+    assert_equal 0, @war_turn.player_1.deck.cards.count
   end
   
   def test_award_spoils_does_not_do_anything_if_mad_turn
     mad_setup
-    
+    @mad_turn.pile_cards
+    @mad_turn.award_spoils
+    assert_empty @mad_turn.spoils_of_war
+    assert_equal 0, @mad_turn.player_1.deck.cards.count
+    assert_equal 0, @mad_turn.player_2.deck.cards.count
   end
   
   

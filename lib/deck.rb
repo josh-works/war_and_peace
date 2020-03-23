@@ -5,6 +5,7 @@ class Deck
   end
   
   def rank_of_card_at(index)
+    return 0 unless cards[index]
     cards[index].rank
   end
   
@@ -20,7 +21,7 @@ class Deck
   end
   
   def add_card(card)
-    @cards << card
+    @cards.push(*card)
   end
   
   def remove_card

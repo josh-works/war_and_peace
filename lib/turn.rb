@@ -35,6 +35,11 @@ class Turn
     end
   end
   
+  def award_spoils
+    winner.add_cards(@spoils_of_war) if winner.is_a?(Player)
+    @spoils_of_war = []
+  end
+  
   
   private
   

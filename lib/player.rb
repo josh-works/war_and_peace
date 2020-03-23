@@ -20,4 +20,8 @@ class Player
   def remove_cards(count)
     @deck.cards.shift(count)
   end
+  
+  def add_cards(cards)
+    @deck.add_card(cards)
+  end
 end
