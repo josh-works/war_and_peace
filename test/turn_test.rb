@@ -56,7 +56,7 @@ class TurnTest < Minitest::Test
   def test_winner_mad_turn_type
     mad_setup
     assert_equal :mutually_assured_destruction, @mad_turn.type
-    assert_equal "No Winner", @mad_turn.winner
+    refute @mad_turn.winner
   end
   
   def test_pile_cards_basic_moves_cards_from_players_deck_to_spoils

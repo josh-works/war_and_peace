@@ -1,13 +1,15 @@
 require './lib/helper'
 
 class GameRunner
-  attr_reader :p1, :p2, :cards
+  attr_reader :p1, :p2, :cards, :turn_count, :winner
   def initialize
     cards = make_cards
     deck_1 = Deck.new(cards.pop(26))
     deck_2 = Deck.new(cards)
     @p1 = Player.new("j1", deck_1)
     @p2 = Player.new("j2", deck_2)
+    @turn_count = 0
+    @winner = nil
   end
   
   def start
@@ -21,12 +23,33 @@ class GameRunner
       puts "unclear input. You said #{input}, please try again"
       start
     end
+    puts messages[:game_over]
   end
   
   private
   
   def take_a_turn
-    require "pry"; binding.pry
+    @turn_count += 1
+    turn = Turn.new(p1, p2)
+    @winner = turn.winner
+    
+    turn.pile_cards
+    turn.award_spoils
+    
+    print_conclusion(turn)
+  end
+  
+  def print_conclusion(turn)
+    message = "Turn #{turn_count.to_s}: "
+    case turn.type
+    when :basic
+      message += messages[:basic]
+    when :war
+      message += messages[:war]
+    when :mutually_assured_destruction
+      message += messages[:mad]
+    end
+    puts message
   end
   
   def we_have_a_winner?
@@ -35,11 +58,15 @@ class GameRunner
   
   def messages
     {
-    welcome: "Welcome to War! (or Peace) This game will be played with 52 cards.\n
-    The players today are #{p1.name} and #{p2.name}.
+    welcome: 
+    "Welcome to War! (or Peace) This game will be played with 52 cards.\n
+    The players today are #{p1.name} and #{p2.name}.\n
     Type 'GO' to start the game!
     ------------------------------------------------------------------",
-    
+    basic: "#{winner.name if winner} won 2 cards",
+    war: "WAR - #{winner.name if winner} won 6 cards",
+    mad: "*mutually assured destruction* 6 cards removed from play",
+    game_over: "*~*~*~* #{winner.name if winner} has won the game! *~*~*~*"
     }
   end
   

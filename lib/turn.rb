@@ -20,7 +20,7 @@ class Turn
     when :war 
       player_with_highest_third_card
     when :mutually_assured_destruction
-      "No Winner"
+      false
     end
   end
   
